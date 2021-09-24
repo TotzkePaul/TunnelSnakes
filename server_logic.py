@@ -133,7 +133,7 @@ def choose_move(data: dict) -> str:
     my_head = data["you"]["head"]  # A dictionary of x/y coordinates like {"x": 0, "y": 0}
     my_body = data["you"]["body"]  # A list of x/y coordinate dictionaries like [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ]
     other_snakes = data["board"]["snakes"]  # A list of dictionaries of x/y coordinates for each snake on the board.
-
+    food = data["board"]["food"]  # A list of dictionaries of x/y coordinates for each piece of food on the board.
     width = data["board"]["width"]  # How wide the board is
     height = data["board"]["height"]  # How high the board is
 
@@ -147,9 +147,11 @@ def choose_move(data: dict) -> str:
 
     # Don't allow your Battlesnake to move back in on it's own neck
     possible_moves = avoid_walls(my_head, height, width, possible_moves)
+    print(f"Possible moves after avoiding walls: {possible_moves}")
     possible_moves = avoid_my_neck(my_head, my_body, possible_moves)
+    print(f"Possible moves after avoiding my neck: {possible_moves}")
     possible_moves = avoid_other_snakes(my_head, other_snakes, possible_moves)
-
+    print(f"Possible moves after avoiding other snakes: {possible_moves}")
     
 
     # TODO: Using information from 'data', find the edges of the board and don't let your Battlesnake move beyond them
@@ -165,7 +167,7 @@ def choose_move(data: dict) -> str:
     # TODO: Using information from 'data', make your Battlesnake move towards a piece of food on the board
 
     # Choose a random direction from the remaining possible_moves to move in, and then return that move
-    move = random.choice(possible_moves)
+    move = choose_direction(my_head, food, possible_moves)
     # TODO: Explore new strategies for picking a move that are better than random
 
     print(f"{data['game']['id']} MOVE {data['turn']}: {move} picked from all valid options in {possible_moves}")
