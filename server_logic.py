@@ -20,24 +20,15 @@ def avoid_my_neck(my_head: Dict[str, int], my_body: List[dict], possible_moves: 
 
     return: The list of remaining possible_moves, with the 'neck' direction removed
     """
-    if "up" in possible_moves and my_head["x"] == my_body[0]["x"] and my_head["y"] == my_body[0]["y"] + 1:
-        possible_moves.remove("up")
-    elif "down" in possible_moves and my_head["x"] == my_body[0]["x"] and my_head["y"] == my_body[0]["y"] - 1:
-        possible_moves.remove("down")
-    elif "left" in possible_moves and my_head["y"] == my_body[0]["y"] and my_head["x"] == my_body[0]["x"] + 1:
-        possible_moves.remove("left")
-    elif "right" in possible_moves and my_head["y"] == my_body[0]["y"] and my_head["x"] == my_body[0]["x"] - 1:
-        possible_moves.remove("right")
-
 
     for segment in my_body:
-            if "up" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] + 1:
+            if "up" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] - 1:
                 possible_moves.remove("up")
-            if "down" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] - 1:
+            if "down" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] + 1:
                 possible_moves.remove("down")
-            if "left" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] + 1:
+            if "left" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] - 1:
                 possible_moves.remove("left")
-            if "right" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] - 1:
+            if "right" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] + 1:
                 possible_moves.remove("right")
 
     return possible_moves
