@@ -20,16 +20,15 @@ def avoid_my_neck(my_head: Dict[str, int], my_body: List[dict], possible_moves: 
 
     return: The list of remaining possible_moves, with the 'neck' direction removed
     """
-    my_neck = my_body[1]  # The segment of body right after the head is the 'neck'
-
-    if "left" in possible_moves and  my_neck["x"] < my_head["x"]:  # my neck is left of my head
-        possible_moves.remove("left")
-    elif "right" in possible_moves and my_neck["x"] > my_head["x"]:  # my neck is right of my head
-        possible_moves.remove("right")
-    elif "down" in possible_moves and my_neck["y"] < my_head["y"]:  # my neck is below my head
-        possible_moves.remove("down")
-    elif "up" in possible_moves and my_neck["y"] > my_head["y"]:  # my neck is above my head
-        possible_moves.remove("up")
+    for segment in my_body:
+            if "up" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] - 1:
+                possible_moves.remove("up")
+            if "down" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] + 1:
+                possible_moves.remove("down")
+            if "left" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] - 1:
+                possible_moves.remove("left")
+            if "right" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] + 1:
+                possible_moves.remove("right")
 
     return possible_moves
 
@@ -83,6 +82,40 @@ def avoid_walls( my_head: Dict[str, int], height :int, width :int, possible_move
 
     return possible_moves
 
+def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: List[str]) -> str:
+    """
+    Pick a direction to move in towards the nearest piece of food by manhatten distance.
+
+    my_head: Dictionary of x/y coordinates of the Battlesnake head.
+            e.g. {"x": 0, "y": 0}
+    food: List of dictionaries of x/y coordinates for each piece of food.
+            e.g. [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ]
+    possible_moves: List of strings. Moves to pick from.
+
+    return: A string of the direction to move in.
+            e.g. "up"
+    """
+    if len(food) == 0:
+        return random.choice(possible_moves)
+    else:
+        min_distance = 100
+        min_distance_index = 0
+        for i in range(len(food)):
+            distance = abs(food[i]["x"] - my_head["x"]) + abs(food[i]["y"] - my_head["y"])
+            if distance < min_distance:
+                min_distance = distance
+                min_distance_index = i
+        
+        if "up" in possible_moves and food[min_distance_index]["y"] < my_head["y"]:
+            return "up"
+        elif "down" in possible_moves and food[min_distance_index]["y"] > my_head["y"]:
+            return "down"
+        elif "left" in possible_moves and food[min_distance_index]["x"] < my_head["x"]:
+            return "left"
+        elif "right" in possible_moves and food[min_distance_index]["x"] > my_head["x"]:
+            return "right"
+        
+    
 
 def choose_move(data: dict) -> str:
     """
