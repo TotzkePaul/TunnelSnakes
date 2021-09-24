@@ -22,13 +22,13 @@ def avoid_my_neck(my_head: Dict[str, int], my_body: List[dict], possible_moves: 
     """
     my_neck = my_body[1]  # The segment of body right after the head is the 'neck'
 
-    if my_neck["x"] < my_head["x"]:  # my neck is left of my head
+    if "left" in possible_moves and  my_neck["x"] < my_head["x"]:  # my neck is left of my head
         possible_moves.remove("left")
-    elif my_neck["x"] > my_head["x"]:  # my neck is right of my head
+    elif "right" in possible_moves and my_neck["x"] > my_head["x"]:  # my neck is right of my head
         possible_moves.remove("right")
-    elif my_neck["y"] < my_head["y"]:  # my neck is below my head
+    elif "down" in possible_moves and my_neck["y"] < my_head["y"]:  # my neck is below my head
         possible_moves.remove("down")
-    elif my_neck["y"] > my_head["y"]:  # my neck is above my head
+    elif "up" in possible_moves and my_neck["y"] > my_head["y"]:  # my neck is above my head
         possible_moves.remove("up")
 
     return possible_moves
@@ -50,14 +50,14 @@ def avoid_other_snakes(my_head: Dict[str, int], other_snakes: List[dict], possib
     """
     for snake in other_snakes:
         for segment in snake["body"]:
-            if segment["x"] < my_head["x"]:  # my neck is left of my head
-                possible_moves.remove("left")
-            elif segment["x"] > my_head["x"]:  # my neck is right of my head
-                possible_moves.remove("right")
-            elif segment["y"] < my_head["y"]:  # my neck is below my head
-                possible_moves.remove("down")
-            elif segment["y"] > my_head["y"]:  # my neck is above my head
+            if "up" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] - 1:
                 possible_moves.remove("up")
+            if "down" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] + 1:
+                possible_moves.remove("down")
+            if "left" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] - 1:
+                possible_moves.remove("left")
+            if "right" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] + 1:
+                possible_moves.remove("right")
 
     return possible_moves
 
@@ -72,13 +72,13 @@ def avoid_walls( my_head: Dict[str, int], height :int, width :int, possible_move
 
     return: The list of remaining possible_moves, with the 'neck' direction removed
     """
-    if my_head["x"] == 0:
+    if "left" in possible_moves and  my_head["x"] == 0:
         possible_moves.remove("left")
-    elif my_head["x"] == height - 1:
+    elif "right" in possible_moves and  my_head["x"] == height - 1:
         possible_moves.remove("right")
-    elif my_head["y"] == 0:
+    elif "down" in possible_moves and my_head["y"] == 0:
         possible_moves.remove("down")
-    elif my_head["y"] == width - 1:
+    elif "up" in possible_moves and  my_head["y"] == width - 1:
         possible_moves.remove("up")
 
     return possible_moves
