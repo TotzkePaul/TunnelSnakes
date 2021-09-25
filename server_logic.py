@@ -122,6 +122,8 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: 
         elif "right" in possible_moves and food[min_distance_index]["x"] > my_head["x"]:
             return "right"
         
+        return random.choice(possible_moves)
+        
     
 
 def choose_move(data: dict) -> str:
