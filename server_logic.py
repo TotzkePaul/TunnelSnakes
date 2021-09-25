@@ -72,13 +72,14 @@ def avoid_walls( my_head: Dict[str, int], height :int, width :int, possible_move
 
     return: The list of remaining possible_moves, with the 'neck' direction removed
     """
+    print(my_head)
     if "left" in possible_moves and  my_head["x"] == 0:
         possible_moves.remove("left")
-    elif "right" in possible_moves and  my_head["x"] == height - 1:
+    if "right" in possible_moves and  my_head["x"] == height - 1:
         possible_moves.remove("right")
-    elif "down" in possible_moves and my_head["y"] == 0:
+    if "down" in possible_moves and my_head["y"] == 0:
         possible_moves.remove("down")
-    elif "up" in possible_moves and  my_head["y"] == width - 1:
+    if "up" in possible_moves and  my_head["y"] == width - 1:
         possible_moves.remove("up")
 
     return possible_moves
