@@ -84,6 +84,23 @@ def avoid_walls( my_head: Dict[str, int], height :int, width :int, possible_move
 
     return possible_moves
 
+def find_nearest_food(my_head: Dict[str, int], food: List[dict]) -> dict:
+    """
+    my_head: Dictionary of x/y coordinates of the Battlesnake head.
+            e.g. {"x": 0, "y": 0}
+    my_body: List of dictionaries of x/y coordinates for every segment of a Battlesnake.
+            e.g. [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ]
+    food: List of dictionaries of x/y coordinates for each piece of food on the board.
+            e.g. [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ]
+
+    return: The dictionary of the nearest piece of food.
+    """
+    nearest_food = food[0]
+    for piece in food:
+        if abs(my_head["x"] - piece["x"]) + abs(my_head["y"] - piece["y"]) < abs(my_head["x"] - nearest_food["x"]) + abs(my_head["y"] - nearest_food["y"]):
+            nearest_food = piece
+    return nearest_food
+
 def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: List[str]) -> str:
     """
     Pick a direction to move in towards the nearest piece of food by manhatten distance.
@@ -105,22 +122,15 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: 
         print("No food - random")
         return random.choice(possible_moves)
     else:
-        min_distance = 100
-        min_distance_index = 0
-        for i in range(len(food)):
-            distance = abs(food[i]["x"] - my_head["x"]) + abs(food[i]["y"] - my_head["y"])
-            if distance < min_distance:
-                min_distance = distance
-                min_distance_index = i
-        
-        if "up" in possible_moves and food[min_distance_index]["y"] < my_head["y"]:
-            return "up"
-        elif "down" in possible_moves and food[min_distance_index]["y"] > my_head["y"]:
-            return "down"
-        elif "left" in possible_moves and food[min_distance_index]["x"] < my_head["x"]:
-            return "left"
-        elif "right" in possible_moves and food[min_distance_index]["x"] > my_head["x"]:
+        nearest_food = find_nearest_food(my_head, food)
+        print("Nearest food: " + str(nearest_food))
+        if nearest_food["x"] > my_head["x"] and "right" in possible_moves:
             return "right"
+        elif nearest_food["x"] < my_head["x"] and "left" in possible_moves:
+            return "left"
+        elif nearest_food["y"] > my_head["y"] and "down" in possible_moves:
+            return "down"
+
         
         return random.choice(possible_moves)
         
