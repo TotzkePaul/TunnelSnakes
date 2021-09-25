@@ -97,7 +97,12 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: 
     return: A string of the direction to move in.
             e.g. "up"
     """
+    if(len(possible_moves) == 1):
+        print("Only one move possible")
+        return possible_moves[0]
+
     if len(food) == 0:
+        print("No food - random")
         return random.choice(possible_moves)
     else:
         min_distance = 100
