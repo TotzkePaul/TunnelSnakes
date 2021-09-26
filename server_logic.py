@@ -128,10 +128,12 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: 
             return "right"
         elif nearest_food["x"] < my_head["x"] and "left" in possible_moves:
             return "left"
-        elif nearest_food["y"] > my_head["y"] and "down" in possible_moves:
+        elif nearest_food["y"] < my_head["y"] and "down" in possible_moves:
             return "down"
+        elif nearest_food["y"] > my_head["y"] and "up" in possible_moves:
+            return "up"
 
-        
+        print("No direction to move in - random")
         return random.choice(possible_moves)
         
     
