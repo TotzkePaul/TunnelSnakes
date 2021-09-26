@@ -20,10 +20,10 @@ def avoid_my_neck(my_head: Dict[str, int], my_body: List[dict], possible_moves: 
 
     return: The list of remaining possible_moves, with the 'neck' direction removed
     """
-    for segment in my_body:
-            if "up" in possible_moves and segment["x"] == my_head["x"] and my_head["y"] == segment["y"] + 1:
+    for segment in my_body[:-1]:
+            if "up" in possible_moves and segment["x"] == my_head["x"] and my_head["y"] + 1 == segment["y"] :
                 possible_moves.remove("up")
-            if "down" in possible_moves and segment["x"] == my_head["x"] and my_head["y"] == segment["y"] - 1:
+            if "down" in possible_moves and segment["x"] == my_head["x"] and my_head["y"]  - 1 == segment["y"]:
                 possible_moves.remove("down")
             if "left" in possible_moves and segment["y"] == my_head["y"] and my_head["x"] == segment["x"] + 1:
                 possible_moves.remove("left")
