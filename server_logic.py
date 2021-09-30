@@ -1,6 +1,6 @@
 from astar import astar
 import random
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 from astar import astar, Node, return_path
 
@@ -105,6 +105,17 @@ def find_nearest_food(my_head: Dict[str, int], food: List[dict]) -> dict:
             nearest_food = piece
     return nearest_food
 
+def choose_from_path(choice: Tuple , my_head: Dict[str, int], possible_moves: List[str]):
+    if choice[0] == my_head["x"] and  my_head["y"] == choice[1] + 1 and "down" in possible_moves:
+        return "down"
+    elif choice[0] == my_head["x"] and  my_head["y"] == choice[1] - 1 and "up" in possible_moves:
+        return "up"
+    elif choice[1] == my_head["y"] and  my_head["x"] == choice[0] + 1 and "left" in possible_moves:
+        return "left"
+    elif choice[1] == my_head["y"] and  my_head["x"] == choice[0] - 1 and "right" in possible_moves:
+        return "right"
+
+
 def choose_direction(my_head: Dict[str, int], food: List[dict], other_snakes: List[dict], height :int, width :int, possible_moves: List[str]) -> str:
     """
     Pick a direction to move in towards the nearest piece of food by manhatten distance.
@@ -118,6 +129,7 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], other_snakes: Li
     return: A string of the direction to move in.
             e.g. "up"
     """
+    maze = make_maze(my_head, other_snakes, height, width)
 
     if(len(possible_moves) == 1):
         print("Only one move possible")
@@ -125,13 +137,33 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], other_snakes: Li
 
     if len(food) == 0:
         print("No food - random")
+        
+        free_spots = [(row_index,col_index) for row_index, row in enumerate(maze) for col_index, col in enumerate(row) if col==0]
+
+        free_spots = sorted(free_spots, key = lambda x: random.random())
+
+        for spot in free_spots:
+            my_path = astar(maze, (my_head["x"], my_head["y"]), (spot[0], spot[1]))
+            acceptable_path = True
+            for snake in other_snakes:
+                snake_path = astar(maze, (snake["body"][0]["x"], snake["body"][0]["y"]), (spot[0], spot[1]))
+                if snake_path != None and len(snake_path) < len(my_path):
+                    acceptable_path = False
+                    break
+            if acceptable_path:
+                return choose_from_path(spot, my_head, possible_moves)
+
+
         return random.choice(possible_moves)
     else:
         # nearest_food = find_nearest_food(my_head, food)
         
 
-        maze = make_maze(my_head, other_snakes, height, width)
-        print(f"Maze: {maze}")
+        
+        # print 2d array
+        print("MAZE")
+        for row in maze:
+            print(row)
         
         nearest_food_path = None
 
@@ -143,14 +175,7 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], other_snakes: Li
 
         if(len(nearest_food_path) > 1):
             choice = food_path[1]        
-            if choice[0] == my_head["x"] and  my_head["y"] == choice[1] + 1 and "down" in possible_moves:
-                return "down"
-            elif choice[0] == my_head["x"] and  my_head["y"] == choice[1] - 1 and "up" in possible_moves:
-                return "up"
-            elif choice[1] == my_head["y"] and  my_head["x"] == choice[0] + 1 and "left" in possible_moves:
-                return "left"
-            elif choice[1] == my_head["y"] and  my_head["x"] == choice[0] - 1 and "right" in possible_moves:
-                return "right"
+            return choose_from_path(choice, my_head, possible_moves)
 
         print("No direction to move in - random")
         return random.choice(possible_moves)
