@@ -1,5 +1,8 @@
+from astar import astar
 import random
 from typing import List, Dict
+
+from astar import astar, Node, return_path
 
 """
 This file can be a nice home for your move logic, and to write helper functions.
@@ -102,7 +105,7 @@ def find_nearest_food(my_head: Dict[str, int], food: List[dict]) -> dict:
             nearest_food = piece
     return nearest_food
 
-def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: List[str]) -> str:
+def choose_direction(my_head: Dict[str, int], food: List[dict], other_snakes: List[dict], height :int, width :int, possible_moves: List[str]) -> str:
     """
     Pick a direction to move in towards the nearest piece of food by manhatten distance.
 
@@ -115,6 +118,7 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: 
     return: A string of the direction to move in.
             e.g. "up"
     """
+
     if(len(possible_moves) == 1):
         print("Only one move possible")
         return possible_moves[0]
@@ -123,21 +127,46 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], possible_moves: 
         print("No food - random")
         return random.choice(possible_moves)
     else:
-        nearest_food = find_nearest_food(my_head, food)
-        print("Nearest food: " + str(nearest_food))
-        if nearest_food["x"] > my_head["x"] and "right" in possible_moves:
-            return "right"
-        elif nearest_food["x"] < my_head["x"] and "left" in possible_moves:
-            return "left"
-        elif nearest_food["y"] < my_head["y"] and "down" in possible_moves:
-            return "down"
-        elif nearest_food["y"] > my_head["y"] and "up" in possible_moves:
-            return "up"
+        # nearest_food = find_nearest_food(my_head, food)
+        
+
+        maze = make_maze(my_head, other_snakes, height, width)
+        print(f"Maze: {maze}")
+        
+        nearest_food_path = None
+
+        for food_piece in food:
+            food_path = astar(maze, (my_head["x"], my_head["y"]), (food_piece["x"], food_piece["y"]))
+            if nearest_food_path is None or len(food_path) < len(nearest_food_path):
+                nearest_food_path = food_path
+
+
+        if(len(nearest_food_path) > 1):
+            choice = food_path[1]        
+            if choice[0] == my_head["x"] and  my_head["y"] == choice[1] + 1 and "down" in possible_moves:
+                return "down"
+            elif choice[0] == my_head["x"] and  my_head["y"] == choice[1] - 1 and "up" in possible_moves:
+                return "up"
+            elif choice[1] == my_head["y"] and  my_head["x"] == choice[0] + 1 and "left" in possible_moves:
+                return "left"
+            elif choice[1] == my_head["y"] and  my_head["x"] == choice[0] - 1 and "right" in possible_moves:
+                return "right"
 
         print("No direction to move in - random")
         return random.choice(possible_moves)
         
-    
+def make_maze(my_head: Dict[str, int], other_snakes: List[dict], height :int, width :int):
+    #make a maze that is height by width
+    maze = [[0 for x in range(width)] for y in range(height)]
+    # fill 1s where there are snakes
+    for snake in other_snakes:
+        for segment in snake["body"]:
+            maze[segment["x"]][segment["y"]] = 1
+
+    return maze
+
+
+
 
 def choose_move(data: dict) -> str:
     """
@@ -149,7 +178,6 @@ def choose_move(data: dict) -> str:
     Use the information in 'data' to decide your next move. The 'data' variable can be interacted
     with as a Python Dictionary, and contains all of the information about the Battlesnake board
     for each move of the game.
-
     """
     my_head = data["you"]["head"]  # A dictionary of x/y coordinates like {"x": 0, "y": 0}
     my_body = data["you"]["body"]  # A list of x/y coordinate dictionaries like [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ]
@@ -158,6 +186,7 @@ def choose_move(data: dict) -> str:
     width = data["board"]["width"]  # How wide the board is
     height = data["board"]["height"]  # How high the board is
 
+    
     # TODO: uncomment the lines below so you can see what this data looks like in your output!
     print(f"~~~ Turn: {data['turn']}  Game Mode: {data['game']['ruleset']['name']} ~~~")
     print(f"All board data this turn: {data}")
@@ -174,22 +203,10 @@ def choose_move(data: dict) -> str:
     possible_moves = avoid_other_snakes(my_head, other_snakes, possible_moves)
     print(f"Possible moves after avoiding other snakes: {possible_moves}")
     
-
-    # TODO: Using information from 'data', find the edges of the board and don't let your Battlesnake move beyond them
-    # board_height = ?
-    # board_width = ?
-
     
 
-    # TODO Using information from 'data', don't let your Battlesnake pick a move that would hit its own body
 
-    # TODO: Using information from 'data', don't let your Battlesnake pick a move that would collide with another Battlesnake
-
-    # TODO: Using information from 'data', make your Battlesnake move towards a piece of food on the board
-
-    # Choose a random direction from the remaining possible_moves to move in, and then return that move
-    move = choose_direction(my_head, food, possible_moves)
-    # TODO: Explore new strategies for picking a move that are better than random
+    move = choose_direction(my_head, food, other_snakes, height, width, possible_moves)
 
     print(f"{data['game']['id']} MOVE {data['turn']}: {move} picked from all valid options in {possible_moves}")
 
