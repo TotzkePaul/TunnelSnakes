@@ -58,9 +58,9 @@ def avoid_other_snakes(my_head: Dict[str, int], other_snakes: List[dict], possib
                 possible_moves.remove("up")
             if "down" in possible_moves and segment["x"] == my_head["x"] and segment["y"] == my_head["y"] - 1:
                 possible_moves.remove("down")
-            if "left" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] + 1:
+            if "left" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] - 1:
                 possible_moves.remove("left")
-            if "right" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] - 1:
+            if "right" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] + 1:
                 possible_moves.remove("right")
 
     return possible_moves
