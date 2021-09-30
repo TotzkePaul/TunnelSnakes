@@ -145,13 +145,17 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], other_snakes: Li
         for spot in free_spots:
             my_path = astar(maze, (my_head["x"], my_head["y"]), (spot[0], spot[1]))
             acceptable_path = True
+            if my_path == None:
+                continue
             for snake in other_snakes:
                 snake_path = astar(maze, (snake["body"][0]["x"], snake["body"][0]["y"]), (spot[0], spot[1]))
                 if snake_path != None and len(snake_path) < len(my_path):
                     acceptable_path = False
                     break
             if acceptable_path:
-                return choose_from_path(spot, my_head, possible_moves)
+                choice = choose_from_path(spot, my_head, possible_moves)
+                if choice != None:
+                    return choice
 
 
         return random.choice(possible_moves)
