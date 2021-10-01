@@ -4,14 +4,6 @@ from typing import List, Dict, Tuple
 
 from astar import astar, Node, return_path
 
-"""
-This file can be a nice home for your move logic, and to write helper functions.
-
-We have started this for you, with a function to help remove the 'neck' direction
-from the list of possible moves!
-"""
-
-
 def avoid_my_neck(my_head: Dict[str, int], my_body: List[dict], possible_moves: List[str]) -> List[str]:
     """
     my_head: Dictionary of x/y coordinates of the Battlesnake head.
@@ -116,7 +108,7 @@ def choose_from_path(choice: Tuple , my_head: Dict[str, int], possible_moves: Li
         return "right"
 
 
-def choose_direction(my_head: Dict[str, int], food: List[dict], other_snakes: List[dict], height :int, width :int, possible_moves: List[str]) -> str:
+def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:int, food: List[dict], other_snakes: List[dict], height :int, width :int, possible_moves: List[str]) -> str:
     """
     Pick a direction to move in towards the nearest piece of food by manhatten distance.
 
@@ -135,27 +127,46 @@ def choose_direction(my_head: Dict[str, int], food: List[dict], other_snakes: Li
         print("Only one move possible")
         return possible_moves[0]
 
-    if len(food) == 0:
+    if len(food) == 0 or (my_health > 33 and len(my_body) > 5):
         print("No food - random")
         
         free_spots = [(row_index,col_index) for row_index, row in enumerate(maze) for col_index, col in enumerate(row) if col==0]
 
-        free_spots = sorted(free_spots, key = lambda x: random.random())
+        # free_spots = sorted(free_spots[:-10], key = lambda x: random.random())
 
-        for spot in free_spots:
-            my_path = astar(maze, (my_head["x"], my_head["y"]), (spot[0], spot[1]))
-            acceptable_path = True
-            if my_path == None:
-                continue
-            for snake in other_snakes:
-                snake_path = astar(maze, (snake["body"][0]["x"], snake["body"][0]["y"]), (spot[0], spot[1]))
-                if snake_path != None and len(snake_path) < len(my_path):
-                    acceptable_path = False
-                    break
-            if acceptable_path:
-                choice = choose_from_path(spot, my_head, possible_moves)
+        my_tail = my_body[-1]
+
+        tail_adj = [(my_tail["x"] + x[0], my_tail["y"]+x[1] ) for x in [(0, -1), (0, 1), (-1, 0), (1, 0)]]
+
+        tail_adj = [ e for e in tail_adj if e in free_spots ]
+
+        for tail in tail_adj:
+            my_path = astar(maze, (my_head["x"], my_head["y"]), tail )
+            if my_path != None:
+                choice = choose_from_path(my_path[1], my_head, possible_moves)
+            
                 if choice != None:
                     return choice
+        
+        return random.choice(possible_moves)
+        
+
+
+
+        # for spot in free_spots:
+        #     my_path = astar(maze, (my_head["x"], my_head["y"]), (spot[0], spot[1]))
+        #     acceptable_path = True
+        #     if my_path == None:
+        #         continue
+        #     for snake in other_snakes:
+        #         snake_path = astar(maze, (snake["body"][0]["x"], snake["body"][0]["y"]), (spot[0], spot[1]))
+        #         if snake_path != None and len(snake_path) < len(my_path):
+        #             acceptable_path = False
+        #             break
+        #     if acceptable_path:
+        #         choice = choose_from_path(spot, my_head, possible_moves)
+        #         if choice != None:
+        #             return choice
 
 
         return random.choice(possible_moves)
@@ -210,6 +221,7 @@ def choose_move(data: dict) -> str:
     """
     my_head = data["you"]["head"]  # A dictionary of x/y coordinates like {"x": 0, "y": 0}
     my_body = data["you"]["body"]  # A list of x/y coordinate dictionaries like [ {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0} ]
+    my_health = data["you"]["health"]  # A number between 0 and 100
     other_snakes = data["board"]["snakes"]  # A list of dictionaries of x/y coordinates for each snake on the board.
     food = data["board"]["food"]  # A list of dictionaries of x/y coordinates for each piece of food on the board.
     width = data["board"]["width"]  # How wide the board is
@@ -235,7 +247,7 @@ def choose_move(data: dict) -> str:
     
 
 
-    move = choose_direction(my_head, food, other_snakes, height, width, possible_moves)
+    move = choose_direction(my_head, my_body, my_health, food, other_snakes, height, width, possible_moves)
 
     print(f"{data['game']['id']} MOVE {data['turn']}: {move} picked from all valid options in {possible_moves}")
 
