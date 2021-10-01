@@ -122,18 +122,13 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
             e.g. "up"
     """
     maze = make_maze(my_head, other_snakes, height, width)
-
+    free_spots = [(row_index,col_index) for row_index, row in enumerate(maze) for col_index, col in enumerate(row) if col==0]
     if(len(possible_moves) == 1):
         print("Only one move possible")
         return possible_moves[0]
 
-    if len(food) == 0 or (my_health > 33 and len(my_body) > 5):
-        print("No food - random")
-        
-        free_spots = [(row_index,col_index) for row_index, row in enumerate(maze) for col_index, col in enumerate(row) if col==0]
-
-        # free_spots = sorted(free_spots[:-10], key = lambda x: random.random())
-
+    too_much_food = height*width/2
+    if (len(food) == 0 or len(food)> len(free_spots)) or (my_health > 33 and len(my_body) > 5):
         my_tail = my_body[-1]
 
         tail_adj = [(my_tail["x"] + x[0], my_tail["y"]+x[1] ) for x in [(0, -1), (0, 1), (-1, 0), (1, 0)]]
