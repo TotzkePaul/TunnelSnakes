@@ -127,7 +127,13 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
         print("Only one move possible")
         return possible_moves[0]
 
-    if len(food) == 0 or (len(food) < len(free_spots) and my_health > 33 and len(my_body) > 5):
+    food_length = len(food)
+    free_spots_length = len(free_spots)
+    print("len(food): {food_length} vs free{free_spots_length}")
+    if len(food) == 0 or (food_length < free_spots_length and my_health > 33 and len(my_body) > 5):
+        print("Chase Tail!")
+
+        
         my_tail = my_body[-1]
 
         tail_adj = [(my_tail["x"] + x[0], my_tail["y"]+x[1] ) for x in [(0, -1), (0, 1), (-1, 0), (1, 0)]]
@@ -150,7 +156,7 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
         
         return random.choice(possible_moves)
     else:
-        
+        print("Eat food!")
         # print 2d array
         print("MAZE")
         for row in maze:
@@ -165,7 +171,7 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
                     nearest_food_path = food_path
 
 
-        if(len(nearest_food_path) > 1):
+        if nearest_food_path is not None and (len(nearest_food_path) > 1):
             choice = food_path[1]        
             return choose_from_path(choice, my_head, possible_moves)
 
