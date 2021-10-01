@@ -127,7 +127,6 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
         print("Only one move possible")
         return possible_moves[0]
 
-    too_much_food = height*width/2
     if (len(food) == 0 or len(food)> len(free_spots)) or (my_health > 33 and len(my_body) > 5):
         my_tail = my_body[-1]
 
