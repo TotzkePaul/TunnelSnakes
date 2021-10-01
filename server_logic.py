@@ -138,6 +138,12 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
 
         tail_adj = [(my_tail["x"] + x[0], my_tail["y"]+x[1] ) for x in [(0, -1), (0, 1), (-1, 0), (1, 0)]]
 
+        if((my_head["x"], my_head["y"]) in tail_adj):
+            choice = choose_from_path((my_tail["x"], my_tail["y"]), my_head, possible_moves)
+                   
+            if choice != None:
+                return choice
+
         tail_adj = [ e for e in tail_adj if e in free_spots ]
 
         for tail in tail_adj:
