@@ -128,7 +128,7 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
         return possible_moves[0]
 
     food_length = len(food)
-    free_spots_length = len(free_spots)
+    free_spots_length = len(free_spots) - food_length
     print(f"len(food): {food_length} vs free{free_spots_length}")
     print(f"my_health: {my_health}")
     if len(food) == 0 or (food_length < free_spots_length and my_health > 33 and len(my_body) > 5):
