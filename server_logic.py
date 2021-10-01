@@ -149,31 +149,7 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
                     return choice
         
         return random.choice(possible_moves)
-        
-
-
-
-        # for spot in free_spots:
-        #     my_path = astar(maze, (my_head["x"], my_head["y"]), (spot[0], spot[1]))
-        #     acceptable_path = True
-        #     if my_path == None:
-        #         continue
-        #     for snake in other_snakes:
-        #         snake_path = astar(maze, (snake["body"][0]["x"], snake["body"][0]["y"]), (spot[0], spot[1]))
-        #         if snake_path != None and len(snake_path) < len(my_path):
-        #             acceptable_path = False
-        #             break
-        #     if acceptable_path:
-        #         choice = choose_from_path(spot, my_head, possible_moves)
-        #         if choice != None:
-        #             return choice
-
-
-        return random.choice(possible_moves)
     else:
-        # nearest_food = find_nearest_food(my_head, food)
-        
-
         
         # print 2d array
         print("MAZE")
@@ -184,8 +160,9 @@ def choose_direction(my_head: Dict[str, int],  my_body: List[dict], my_health:in
 
         for food_piece in food:
             food_path = astar(maze, (my_head["x"], my_head["y"]), (food_piece["x"], food_piece["y"]))
-            if nearest_food_path is None or len(food_path) < len(nearest_food_path):
-                nearest_food_path = food_path
+            if food_path != None:
+                if nearest_food_path is None or len(food_path) < len(nearest_food_path):
+                    nearest_food_path = food_path
 
 
         if(len(nearest_food_path) > 1):
