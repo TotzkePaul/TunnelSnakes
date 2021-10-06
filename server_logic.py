@@ -10,6 +10,6 @@ def choose_move(data: dict) -> str:
     board = Board(data)
     move = board.you.chose_direction(board)
     
-    print(f"{data['game']['id']} MOVE {data['turn']}: {move} picked from all valid options in {possible_moves}")
+    print(f"{data['game']['id']} MOVE {data['turn']}: {move} picked")
 
     return move
