@@ -140,7 +140,9 @@ class Board:
 
             if nearest_food_path is not None and (len(nearest_food_path) > 1):
                 choice = food_path[1]        
-                return board.choose_from_path(choice, my_head, possible_moves)
+                chosen = board.choose_from_path(choice, my_head, possible_moves)
+                if chosen != None:
+                    return chosen
 
             print("No direction to move in - random")
             return random.choice(possible_moves)
