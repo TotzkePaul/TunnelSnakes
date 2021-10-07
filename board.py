@@ -58,6 +58,11 @@ class Board:
         b = board.avoid_my_neck(my_snake)
         c = board.avoid_other_snakes(my_snake)
         possible_moves = list(set(a).intersection(set(b)).intersection(set(c)))
+
+        if len(possible_moves) > 1:
+            d = board.avoid_longer_snakes_next_move(my_snake)
+            possible_moves = list(set(possible_moves).intersection(set(d)))
+
         return possible_moves
 
 
@@ -189,6 +194,38 @@ class Board:
                     possible_moves.remove("left")
                 if "right" in possible_moves and segment["y"] == my_head["y"] and segment["x"] == my_head["x"] + 1:
                     possible_moves.remove("right")
+
+        return possible_moves
+
+    def avoid_longer_snakes_next_move(self, my_snake:Snake) -> List[str]:
+        board = self
+        possible_moves = ['up', 'down', 'left', 'right']
+        my_head = my_snake.head
+        other_snakes = board.snakes
+        for snake in other_snakes:
+            if snake.body[0] == my_head or len(snake.body) < len(my_snake.body):
+                continue
+            for segment in snake.body[:-1]:
+                if segment["x"] == my_head["x"] -1 and segment["y"] == my_head["y"] + 1:
+                    if "up" in possible_moves:
+                        possible_moves.remove("up")
+                    if "left" in possible_moves:
+                        possible_moves.remove("left")
+                if segment["x"] == my_head["x"] + 1 and segment["y"] == my_head["y"] + 1:
+                    if "up" in possible_moves:
+                        possible_moves.remove("up")
+                    if "right" in possible_moves:
+                        possible_moves.remove("right")
+                if segment["x"] == my_head["x"] - 1 and segment["y"] == my_head["y"] - 1:
+                    if "down" in possible_moves:
+                        possible_moves.remove("down")
+                    if "left" in possible_moves:
+                        possible_moves.remove("left")
+                if segment["x"] == my_head["x"] + 1 and segment["y"] == my_head["y"] - 1:
+                    if "down" in possible_moves:
+                        possible_moves.remove("down")
+                    if "right" in possible_moves:
+                        possible_moves.remove("right")
 
         return possible_moves
 
