@@ -97,7 +97,7 @@ class Board:
         print(f"len(food): {food_length} vs free{free_spots_length}")
         print(f"my_health: {my_health}")
 
-        if len(food) == 0 or (food_length < free_spots_length and my_health > 33 and len(my_body) > 5):
+        if len(food) == 0 or (food_length < free_spots_length and my_health > 33 and len(my_body) > 8):
             print("Chase Tail!")
 
             
@@ -105,7 +105,7 @@ class Board:
 
             tail_adj = [(my_tail["x"] + x[0], my_tail["y"]+x[1] ) for x in [(0, -1), (0, 1), (-1, 0), (1, 0)]]
 
-            if((my_head["x"], my_head["y"]) in tail_adj):
+            if((my_head["x"], my_head["y"]) in tail_adj) and board.hazard_grid[my_head["x"]][my_head["y"]] == 0:
                 choice = board.choose_from_path((my_tail["x"], my_tail["y"]), my_head, possible_moves)
                         
                 if choice != None:
