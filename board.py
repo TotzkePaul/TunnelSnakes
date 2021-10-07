@@ -109,7 +109,7 @@ class Board:
             tail_adj = [ e for e in tail_adj if e in free_spots ]
 
             for tail in tail_adj:
-                my_path = astar(maze, (my_head["x"], my_head["y"]), tail )
+                my_path = astar(maze, (my_head["x"], my_head["y"]), tail, board.hazard_grid)
                 if my_path != None:
                     choice = board.choose_from_path(my_path[1], my_head, possible_moves)
                 
@@ -127,7 +127,7 @@ class Board:
             nearest_food_path = None
 
             for food_piece in food:
-                food_path = astar(maze, (my_head["x"], my_head["y"]), (food_piece["x"], food_piece["y"]))
+                food_path = astar(maze, (my_head["x"], my_head["y"]), (food_piece["x"], food_piece["y"]), board.hazard_grid)
                 if food_path != None:
                     if nearest_food_path is None or len(food_path) < len(nearest_food_path):
                         nearest_food_path = food_path

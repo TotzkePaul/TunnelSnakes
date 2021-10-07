@@ -1,8 +1,3 @@
-from astar import astar
-import random
-from typing import List, Dict, Tuple
-
-from astar import astar, Node, return_path
 from board import Board
 
 

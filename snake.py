@@ -6,9 +6,9 @@ class Snake:
         self.length = len(snake_data['body'])
         self.body = snake_data['body']
         self.head = snake_data['body'][0]
-        self.health = snake_data['health']
+        self.health :int = snake_data['health']
         self.color = snake_data['color']
         self.head = snake_data['head']
-        self.latency = snake_data['latency']
+        self.latency:int = snake_data['latency']
 
 

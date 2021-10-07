@@ -20,7 +20,13 @@ def return_path(current_node):
         current = current.parent
     return path[::-1]  # Return reversed path
 
-def astar(maze, start, end):
+def cost_function(child, end_node, hazard_grid):
+    distance = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2)
+    penalty = hazard_grid[child.position[0]][child.position[1]]
+    return distance + penalty
+    
+
+def astar(maze, start, end, hazard_grid):
     """Returns a list of tuples as a path from the given start to the given end in the given maze"""
 
     # Create start and end node
@@ -88,7 +94,7 @@ def astar(maze, start, end):
 
             # Create the f, g, and h values
             child.g = current_node.g + 1
-            child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2)
+            child.h = cost_function(child, end_node, hazard_grid)
             child.f = child.g + child.h
 
             # Child is already in the open list
