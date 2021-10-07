@@ -61,7 +61,7 @@ class Board:
         return possible_moves
 
 
-    def choose_from_path(choice: Tuple , my_head: Dict[str, int], possible_moves: List[str]):
+    def choose_from_path(self, choice: Tuple , my_head: Dict[str, int], possible_moves: List[str]):
         if choice[0] == my_head["x"] and  my_head["y"] == choice[1] + 1 and "down" in possible_moves:
             return "down"
         elif choice[0] == my_head["x"] and  my_head["y"] == choice[1] - 1 and "up" in possible_moves:
