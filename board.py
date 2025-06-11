@@ -76,7 +76,7 @@ class Board:
         elif choice[1] == my_head["y"] and  my_head["x"] == choice[0] - 1 and "right" in possible_moves:
             return "right"
 
-    def chose_direction(self, my_snake:Snake):
+    def choose_direction(self, my_snake:Snake):
         board = self
         food : List = board.food
         my_health = my_snake.health
@@ -154,11 +154,11 @@ class Board:
         my_head = my_snake.head
         if "left" in possible_moves and  my_head["x"] == 0:
             possible_moves.remove("left")
-        if "right" in possible_moves and  my_head["x"] == board.height - 1:
+        if "right" in possible_moves and  my_head["x"] == board.width - 1:
             possible_moves.remove("right")
         if "down" in possible_moves and my_head["y"] == 0:
             possible_moves.remove("down")
-        if "up" in possible_moves and  my_head["y"] == board.width - 1:
+        if "up" in possible_moves and  my_head["y"] == board.height - 1:
             possible_moves.remove("up")
         return possible_moves
 
