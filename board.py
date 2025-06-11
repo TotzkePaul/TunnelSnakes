@@ -31,9 +31,8 @@ class Board:
         self.free_spots_grid = [[0 for x in range(self.width)] for y in range(self.height)]
         for x in range(self.width):
             for y in range(self.height):
-                if self.snake_grid[x][y] > 0:
+                if self.snake_grid[x][y] == 0:
                     self.free_spots.append({'x': x, 'y': y})
-                else:
                     self.free_spots_grid[x][y] = 1
 
     def set_snake_grid(self):
